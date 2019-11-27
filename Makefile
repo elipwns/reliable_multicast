@@ -55,15 +55,16 @@ CFLAGS ?= -O2 -fpic -Wall -D_GNU_SOURCE
 
 .PHONY: all clean etags print_obj install uninstall
 
-all: $(LIB_TARGET) $(LIB_SO_TARGET) $(TEST_TARGET)
+# all: $(LIB_TARGET) $(LIB_SO_TARGET) $(TEST_TARGET)
+all: $(LIB_TARGET) $(LIB_SO_TARGET) 
 
 print_obj:
 	@echo $(patsubst %,${CURDIR}/%, $(OBJ))
 
 wireshark: $(WIRESHARK_TARGET)
 
-$(TEST_TARGET): $(LIB_SO_TARGET) $(OBJ) $(TEST_OBJ)
-	$(CC) $(CFLAGS) -L. -lrmc $^ -o $@
+# $(TEST_TARGET): $(LIB_SO_TARGET) $(OBJ) $(TEST_OBJ)
+# 	$(CC) $(CFLAGS) -L. -lrmc $^ -o $@
 
 $(LIB_TARGET): $(OBJ)
 	ar q $(LIB_TARGET) $(OBJ)
@@ -77,24 +78,25 @@ install: all
 	install -d ${DESTDIR}/include
 	install -m 0644 ${LIB_TARGET} ${DESTDIR}/lib
 	install -m 0644 ${LIB_SO_TARGET} ${DESTDIR}/lib
-	install -m 0755 ${TEST_TARGET} ${DESTDIR}/bin
+	# install -m 0755 ${TEST_TARGET} ${DESTDIR}/bin
 	install -m 0644 ${INST_HDR} ${DESTDIR}/include
 
 uninstall:
 	rm -f ${DESTDIR}/lib/${LIB_TARGET}
 	rm -f ${DESTDIR}/lib/${LIB_SO_TARGET}
-	rm -f ${DESTDIR}/bin/${TEST_TARGET}
+	# rm -f ${DESTDIR}/bin/${TEST_TARGET}
 	(cd ${DESTDIR}/include; rm -f ${INST_HDR})
 etags:
 	@rm -f TAGS
 	find . -name '*.h' -o -name '*.c' -print | etags -
 
 clean:
-	rm -f $(OBJ) *~ $(TEST_TARGET) $(TEST_OBJ) $(WIRESHARK_TARGET) $(LIB_TARGET) $(LIB_SO_TARGET)
+	# rm -f $(OBJ) *~ $(TEST_TARGET) $(TEST_OBJ) $(WIRESHARK_TARGET) $(LIB_TARGET) $(LIB_SO_TARGET)
+	rm -f $(OBJ) *~ $(WIRESHARK_TARGET) $(LIB_TARGET) $(LIB_SO_TARGET)
 
 $(OBJ): $(HDR) Makefile
 
-$(TEST_OBJ): $(HDR) Makefile
+# $(TEST_OBJ): $(HDR) Makefile
 
 $(WIRESHARK_TARGET): rmc_wireshark_plugin.c
 	$(CC) `pkg-config --cflags wireshark` `pkg-config --libs wireshark` -fpic -shared $^ -o $@
